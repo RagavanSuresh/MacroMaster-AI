@@ -145,7 +145,7 @@ export default {
         python_code: 'Python Code Converter',
         macro_dependency: 'Generate Macro Dependency',
         Process_optimizer: 'Optimize Process',
-        error_detector_corrector: 'Error Detector',
+        Error_detector_corrector: 'Smart Code Fix',
       };
       return keyMap[key] || key;
     },

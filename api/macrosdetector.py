@@ -53,6 +53,11 @@ def upload_file():
         return jsonify({'error': 'No selected file'}), 400
 
     if file:
+        # Remove the existing flowchart.png if it exists
+        flowchart_path = 'flowchart.png'
+        if os.path.exists(flowchart_path):
+            os.remove(flowchart_path)
+
         with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsm') as tmp:
             file_path = tmp.name
             file.save(file_path)
@@ -127,9 +132,8 @@ Mentioning irrelevant details like extracting code or performing actions beyond 
         parsed_dict = split_sections(response.text)
         components, edges = parse_flowchart_string(parsed_dict['logic_flowchart'])
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp_img:
-            image_path = tmp_img.name
-            draw_flowchart(components=components, edges=edges)
+        # Save the flowchart image as 'flowchart.png'
+        draw_flowchart(components=components, edges=edges)
 
         return jsonify(parsed_dict)
 
