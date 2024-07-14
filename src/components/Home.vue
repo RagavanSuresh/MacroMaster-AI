@@ -38,6 +38,7 @@
             <v-card-title class="text-center mb-4">Features</v-card-title>
             <v-card-text>
               <v-row>
+                <!-- Adding Features -->
                 <v-col cols="12" md="4" class="feature-item">
                   <v-icon color="primary" large>mdi-file-document-outline</v-icon>
                   <p>Automatic Macro Detection</p>
@@ -49,6 +50,38 @@
                 <v-col cols="12" md="4" class="feature-item">
                   <v-icon color="primary" large>mdi-cogs</v-icon>
                   <p>Seamless Integration with Modern Technologies</p>
+                </v-col>
+                <v-col cols="12" md="4" class="feature-item">
+                  <v-icon color="primary" large>mdi-function-variant</v-icon>
+                  <p>Function Logic Describer</p>
+                </v-col>
+                <v-col cols="12" md="4" class="feature-item">
+                  <v-icon color="primary" large>mdi-file-document-outline</v-icon>
+                  <p>Document VBA Code</p>
+                </v-col>
+                <v-col cols="12" md="4" class="feature-item">
+                  <v-icon color="primary" large>mdi-file-document-outline</v-icon>
+                  <p>Visualize Logic Flowchart</p>
+                </v-col>
+                <v-col cols="12" md="4" class="feature-item">
+                  <v-icon color="primary" large>mdi-speedometer</v-icon>
+                  <p>Code Efficiency Evaluation</p>
+                </v-col>
+                <v-col cols="12" md="4" class="feature-item">
+                  <v-icon color="primary" large>mdi-language-python</v-icon>
+                  <p>Convert VBA to Python Code</p>
+                </v-col>
+                <v-col cols="12" md="4" class="feature-item">
+                  <v-icon color="primary" large>mdi-link-variant</v-icon>
+                  <p>Macro Dependency Mapping</p>
+                </v-col>
+                <v-col cols="12" md="4" class="feature-item">
+                  <v-icon color="primary" large>mdi-tune</v-icon>
+                  <p>Process Optimization</p>
+                </v-col>
+                <v-col cols="12" md="4" class="feature-item">
+                  <v-icon color="primary" large>mdi-alert-circle-outline</v-icon>
+                  <p>Error Detection and Correction</p>
                 </v-col>
               </v-row>
             </v-card-text>
@@ -98,6 +131,11 @@
   
   .feature-item {
     text-align: center;
+    padding: 16px;
+  }
+  
+  .feature-item p {
+    margin-top: 8px;
   }
   
   .text-center {
