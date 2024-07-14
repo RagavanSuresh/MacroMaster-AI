@@ -19,7 +19,7 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 
 def split_sections(input_string):
     sections = input_string.split("!--------------")
-    headings = ["functionalLogic", "documented_code", "logic_flowchart", "security_vulnerabilities", "code_efficiency", "python_code"]
+    headings = ["functionalLogic", "documented_code", "logic_flowchart", "security_vulnerabilities", "code_efficiency","macro_dependency","Error_detector_corrector","Process_optimizer","python_code"]
 
     section_dict = {}
 
@@ -69,46 +69,58 @@ def upload_file():
             return jsonify({'error': 'No VBA macros found.'}), 400
 
         vba_code = vba
-        prompt = """
-        I need assistance in analyzing VBA macros. Specifically, I'd like to extract the following information:
+        prompt = """I need assistance in analyzing VBA macros. Specifically, I'd like to extract the following information:
 
-        Functional Logic: Describe the core functionalities embedded within the VBA macros. This should explain what the macros are designed to achieve.
+Functional Logic: Describe the core functionalities embedded within the VBA macros. This should explain what the macros are designed to achieve.
 
-        Documented VBA Code: Document the entire VBA code and output the code with documentation
+Documented VBA Code: Document the entire VBA code and output the code with documentation
 
-        Logic Flowchart: Produce me a flowchart component list where the vba function is being read, the logic is being extracted has loops, decisions, processes and the start/end. A dictionary has to be produced where the keys must be loops, decisions, processes and the start/end and the values must be nodes that are derived from the vba function being read(Name the nodes in terms of logic and not as present in function).Create edges as a list of tuples among the nodes where first node is the source and the second is the destination.
+Logic Flowchart: Produce me a flowchart component list where the vba function is being read, the logic is being extracted has loops, decisions, processes and the start/end. A dictionary has to be produced where the keys must be loops, decisions, processes and the start/end and the values must be nodes that are derived from the vba function being read(Name the nodes in terms of logic and not as present in function).Create edges as a list of tuples among the nodes where first node is the source and the second is the destination.
 
-        Security Check: Check the macros for security vulnerabilities
+Security Check: Check the macros for security vulnerabilities
 
-        Code Efficiency: Check for codes efficiency i.e., is there a more efficient solution and give us the most efficient function code.
+Code Efficiency: Check for codes efficiency i.e., is there a more efficient solution and give us the most efficient function code.
 
-        Python translation: Translate the vba function into a python code snippet.
+Macro Dependency Mapper: Analyse the vba code recommend the dependency of the macros code and which will suit the macros better.
 
-        Output:
+Error Detection and Correction: Analyse the code detect the errors in the code and produce and corrected code if error exists, else generate the code as it is.
 
-        Please provide the extracted information in the text format not in JSON. It should have the following fields:
+Process Optimizer: Analyse the function and produce a description on the current data flow and how it can the process be optimized
 
-        ADD AN !-------------- DELIMITER
-        functionalLogic: Text description of the macro's functionalities.
-        ADD AN !-------------- DELIMITER
-        documented_code: Documented VBA code.
-        ADD AN !-------------- DELIMITER
-        logic_flowchart: Produce me the dictionary where keys must strictly be loops, decisions, processes and the start/end and the values are the nodes identified from the vba code(Name the nodes in terms of logic and not as present in function). And edges as a list of tuples where the first node is the source and the second node is the destination.
-        Important Note : IF MORE THAN 1 VALUE IS PRESENT FOR A KEY THEN PRODUCE THE VALUES AS A LIST.
-        Important Note : ADD <-----------------------> DELIMITER BETWEEN COMPONENT DICTIONARY AND EDGE LIST  
-        ADD AN !-------------- DELIMITER
-        security_vulnerabilities: yes if vulnerabilities exists, no if it doesn't exist
-        ADD AN !-------------- DELIMITER
-        code_efficiency: produce the code for the most efficient code if more efficient code exists, else produce the same code
-        ADD AN !-------------- DELIMITER
-        python_code: produce the python code snippet of the vba code given
-        ADD AN !-------------- DELIMITER
+Python translation: Translate the vba function into a python code snippet.
 
-        Important Note : ONLY OUTPUT THE REQUESTED FORMAT NOTHING ELSE IS REQUIRED. 
-        Avoid:
-        Including unnecessary conversational phrases like "I'm going to" or greetings.
-        Mentioning irrelevant details like extracting code or performing actions beyond analysis.
-        """
+Output:
+
+Please provide the extracted information in the text format not in JSON. It should have the following fields:
+
+ADD AN !-------------- DELIMITER
+functionalLogic: Text description of the macro's functionalities.
+ADD AN !-------------- DELIMITER
+documented_code: Documented VBA code.
+ADD AN !-------------- DELIMITER
+logic_flowchart: Produce me the dictionary where keys must strictly be loops, decisions, processes and the start/end and the values are the nodes identified from the vba code(Name the nodes in terms of logic and not as present in function). And edges as a list of tuples where the first node is the source and the second node is the destination.
+Important Note : IF MORE THAN 1 VALUE IS PRESENT FOR A KEY THEN PRODUCE THE VALUES AS A LIST.
+Important Note : ADD <-----------------------> DELIMITER BETWEEN COMPONENT DICTIONARY AND EDGE LIST  
+ADD AN !-------------- DELIMITER
+security_vulnerabilities: yes if vulnerabilities exists, no if it doesn't exist
+ADD AN !-------------- DELIMITER
+code_efficiency: produce the code for the most efficient code if more efficient code exists, else produce the same code
+ADD AN !-------------- DELIMITER
+macro_dependency: Give us a description of the dependency of the macros vba code
+ADD AN !-------------- DELIMITER
+Error_detector_corrector: Check for errors in the vba code, if errors exist give us the corrected code else produce the code as it is
+ADD AN !-------------- DELIMITER
+Process_optimizer: Analyse the function process and give a description on how the current process is working and how it can be optimized
+ADD AN !-------------- DELIMITER
+python_code: produce the python code snippet of the vba code given
+ADD AN !-------------- DELIMITER
+
+Important Note : ONLY OUTPUT THE REQUESTED FORMAT NOTHING ELSE IS REQUIRED. 
+Avoid:
+Including unnecessary conversational phrases like "I'm going to" or greetings.
+Mentioning irrelevant details like extracting code or performing actions beyond analysis.
+
+"""
 
         response = model.generate_content(vba_code + prompt)
 

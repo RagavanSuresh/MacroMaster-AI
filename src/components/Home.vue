@@ -39,7 +39,7 @@
             <v-card-text>
               <v-row>
                 <v-col cols="12" md="4" class="feature-item">
-                  <v-icon color="primary" large>mdi-file-document-box-check-outline</v-icon>
+                  <v-icon color="primary" large>mdi-file-document-outline</v-icon>
                   <p>Automatic Macro Detection</p>
                 </v-col>
                 <v-col cols="12" md="4" class="feature-item">
