@@ -10,7 +10,18 @@
               analysis tool provide detailed documentation and insights.
             </p>
   
-            <FileUpload />
+            <FileUpload
+              @fileProcessed="handleFileProcessed"
+              @fileProcessingError="handleFileProcessingError"
+              @clearResults="clearResults"
+            />
+  
+            <v-alert v-if="result" type="success" class="mt-3">
+              <pre>{{ result }}</pre>
+            </v-alert>
+            <v-alert v-if="error" type="error" class="mt-3">
+              {{ error }}
+            </v-alert>
           </v-card>
         </v-col>
       </v-row>
@@ -54,6 +65,26 @@
     name: 'Home',
     components: {
       FileUpload,
+    },
+    data() {
+      return {
+        result: null,
+        error: null,
+      };
+    },
+    methods: {
+      handleFileProcessed(result) {
+        this.result = result;
+        this.error = null;
+      },
+      handleFileProcessingError(error) {
+        this.result = null;
+        this.error = error;
+      },
+      clearResults() {
+        this.result = null;
+        this.error = null;
+      },
     },
   };
   </script>
