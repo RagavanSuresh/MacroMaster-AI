@@ -8,6 +8,7 @@ import re
 from Flowchart import draw_flowchart
 import ast
 import tempfile
+import logging
 
 app = Flask(__name__)
 CORS(app)
@@ -16,6 +17,8 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API"))
 
 model = genai.GenerativeModel('gemini-1.5-flash')
+
+logging.basicConfig(level=logging.INFO)
 
 def split_sections(input_string):
     sections = input_string.split("!--------------")
@@ -54,13 +57,18 @@ def upload_file():
 
     if file:
         # Remove the existing flowchart.png if it exists
-        flowchart_path = 'flowchart.png'
+        flowchart_path = './flowchart.png'
         if os.path.exists(flowchart_path):
-            os.remove(flowchart_path)
+            try:
+                os.remove(flowchart_path)
+                logging.info(f"Deleted existing flowchart image: {flowchart_path}")
+            except Exception as e:
+                logging.error(f"Error deleting flowchart image: {e}")
 
         with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsm') as tmp:
             file_path = tmp.name
             file.save(file_path)
+            logging.info(f"Saved uploaded file to temporary path: {file_path}")
 
         vba_parser = VBA_Parser(file_path)
         if vba_parser.detect_vba_macros():
@@ -70,6 +78,7 @@ def upload_file():
                 vba += f"Stream Path: {stream_path}\n"
                 vba += f"VBA Filename: {vba_filename}\n"
                 vba += f"VBA Code:\n{vba_code}\n\n"
+            logging.info("VBA macros detected and extracted.")
         else:
             return jsonify({'error': 'No VBA macros found.'}), 400
 
@@ -103,7 +112,7 @@ functionalLogic: Text description of the macro's functionalities.
 ADD AN !-------------- DELIMITER
 documented_code: Documented VBA code.
 ADD AN !-------------- DELIMITER
-logic_flowchart: Produce me the dictionary where keys must strictly be loops, decisions, processes and the start/end and the values are the nodes identified from the vba code(Name the nodes in terms of logic and not as present in function). And edges as a list of tuples where the first node is the source and the second node is the destination.
+logic_flowchart: Produce me the dictionary where keys must strictly be loops, decisions, processes and the start/end and the values are the nodes identified from the vba code(Name the nodes in terms of logic and not as present in function). And edges as a list of tuples where the first node is the source and the second is the destination.
 Important Note : IF MORE THAN 1 VALUE IS PRESENT FOR A KEY THEN PRODUCE THE VALUES AS A LIST.
 Important Note : ADD <-----------------------> DELIMITER BETWEEN COMPONENT DICTIONARY AND EDGE LIST  
 ADD AN !-------------- DELIMITER
@@ -128,12 +137,23 @@ Mentioning irrelevant details like extracting code or performing actions beyond 
 """
 
         response = model.generate_content(vba_code + prompt)
+        logging.info("Generated content from model.")
 
         parsed_dict = split_sections(response.text)
         components, edges = parse_flowchart_string(parsed_dict['logic_flowchart'])
+        logging.info("Parsed flowchart string.")
 
-        # Save the flowchart image as 'flowchart.png'
-        draw_flowchart(components=components, edges=edges)
+        # Log the components and edges to ensure they're correct
+        logging.info(f"Components: {components}")
+        logging.info(f"Edges: {edges}")
+
+        # Ensure components and edges are in the correct format
+        if isinstance(components, dict) and isinstance(edges, list):
+            # Save the flowchart image as 'flowchart.png'
+            draw_flowchart(components=components, edges=edges)
+            logging.info("Flowchart image created and saved as 'flowchart.png'.")
+        else:
+            logging.error("Components and edges are not in the correct format.")
 
         return jsonify(parsed_dict)
 

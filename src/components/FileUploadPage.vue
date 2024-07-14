@@ -100,7 +100,7 @@ export default {
       dialog: false,
       dialogTitle: '',
       dialogContent: '',
-      flowchartUrl: 'flowchart.png', // Path to the generated flowchart image
+      flowchartUrl: '../../api/flowchart.png', // Path to the generated flowchart image
     };
   },
   methods: {
